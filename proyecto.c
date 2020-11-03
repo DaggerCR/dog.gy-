@@ -131,31 +131,18 @@ void codificar20(char link[50],size_t len)
 	char nuevoLink[50];
 	int x = 0;
 	int y = 0;
-	//if(esPar(len) == 1)
-	//{
-		while(x != len/2)
-		{
-			printf("\nUsando %d y %d\n",link[y],link[y+1]);
-			nuevoLink[x] = escoger(link[y],link[y+1]);
-					
-			x = x+1;
-			y = y+2;
-		}
-	//}
-	/*
-	else
+	while(x != len/2)
 	{
-	
-		while(x != len/2)
-		{
-			printf("\nUsando %d y %d\n",link[y],link[y+1]);
-			nuevoLink[x] = escoger(link[y],link[y+1]);
+		printf("\nUsando %d y %d\n",link[y],link[y+1]);
+		nuevoLink[x] = escoger(link[y],link[y+1]);
 					
-			x = x+1;
-			y = y+2;
-		}
+		x = x+1;
+		y = y+2;
+	
 	}
-	*/
+	if(esPar(len) == 0)
+		nuevoLink[x] = link[len-1];
+	
 	printf("\nLink codificado20: dog.gy/%s\n",nuevoLink);	
 }
 
