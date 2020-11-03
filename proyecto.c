@@ -31,7 +31,7 @@ typedef struct Nodo
 	struct Nodo *siguiente;
 	struct Nodo *anterior;
 };
-
+//por ahora no se usa
 typedef struct ListaSimple
 {
 	struct Nodo *primerNodo;
@@ -46,13 +46,50 @@ typedef struct ListaSimple
 // m = 109
 // z = 122
 
-int esPar(int num)
+int esPar(size_t num)
 {
 	if(num % 2 == 0)
 	{
 		return 1;//es par
 	}
 	return 0;
+}
+
+char escoger(char a, char b)
+{
+
+	//tranforma caracteres especiales
+	// . ?
+	// / _
+	if(a == 46)
+		return 63;
+	if(a == 47)
+		return 95;
+	if(b == 46)
+		return 63;
+	if(b == 47)
+		return 95;
+
+	//quita prioridad a vocales
+	if(a == 97 || a == 101 || a == 105 || a == 111 || a == 117 )
+		return b;
+	if(b == 97 || b == 101 || b == 105 || b == 111 || b == 117 )
+		return a;
+	if(a == 65 || a == 69 || a == 73 || a == 79 || a == 85 )
+		return b;
+	if(b == 65 || b == 69 || b == 73 || b == 79 || b == 85 )
+		return a;
+	
+	//retorna si mismo
+	if(a == b)
+		return a;
+	
+	if(a > b)
+		return b;
+	if(a < b)
+		return a;
+	
+	//return 61;
 }
 
 void codificar10(char link[50],size_t len)
@@ -90,14 +127,24 @@ void codificar10(char link[50],size_t len)
 
 void codificar20(char link[50],size_t len)
 {
-	char nuevoLink[10];
+	char nuevoLink[50];
 	int x = 0;
-	while(x != len)
+	int y = 0;
+	if(esPar(len) == 1)
 	{
-			
-		x++;
+		while(x != len/2)
+		{
+			printf("\nUsando %d y %d\n",link[y],link[y+1]);
+			nuevoLink[x] = escoger(link[y],link[y+1]);
+					
+			x = x+1;
+			y = y+2;
+		}
 	}
+	printf("\nLink codificado20: dog.gy/%s\n",nuevoLink);	
 }
+
+
 
 void codificar(char link[50])
 {
@@ -107,6 +154,7 @@ void codificar(char link[50])
 	//saber la letra actual
 	int x = 0;
 	printf("\nEste link es de tamano: %d",len);
+	
 	/*
 	while(x != len)
 	{
@@ -114,10 +162,16 @@ void codificar(char link[50])
 		x++;
 	}
 	*/
+	
 	if(len <=10)
 	{
 		codificar10(link,len);
 	}
+	else
+		if(len <=20)
+		{
+			codificar20(link,len);
+		}
 	
 }
 
