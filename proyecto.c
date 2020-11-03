@@ -55,7 +55,7 @@ int esPar(size_t num)
 	return 0;
 }
 
-char escoger(char a, char b)
+char escoger2(char a, char b)
 {
 	//creo que falta arreglar cuando le mandan : - 
 
@@ -91,6 +91,81 @@ char escoger(char a, char b)
 		return a;
 	
 	//return 61;
+}
+
+int esVocal(char a)
+{
+	if(a == 97 || a == 101 || a == 105 || a == 111 || a == 117 || a == 65 || a == 69 || a == 73 || a == 79 || a == 85)
+		return 1;
+	return 0;
+}
+
+char escoger3(char a, char b, char c)
+{
+
+	if(a == 46 || b == 46 || c == 46)
+		return 63;
+	if(a == 47 || b == 47 || c == 47)
+		return 95;
+	
+
+	//cuando solo hay letras
+	if((esVocal(a) == 1) && (esVocal(b) == 1)&&(esVocal(c) == 1))
+	{
+		//las 3 son vocales
+		return a+1;
+	}
+	if((esVocal(a) == 1) && (esVocal(b) == 1))
+	{
+		// a y b son vocales
+		return c;
+	}
+	if((esVocal(a) == 1) && (esVocal(c) == 1))
+	{
+		// a y c son vocales
+		return b;
+	}	
+	if((esVocal(b) == 1) && (esVocal(c) == 1))
+	{
+		//b y c son vocales
+		return a;
+	}
+	if((esVocal(a) == 0) && (esVocal(b) == 0)&&(esVocal(c) == 0))
+	{
+		//todas con consonates
+		if(a <= b && a<=c)
+			return a;
+		if(b <= a && b<=c)
+			return b;
+		if(c <= a && c<=b)
+			return c;
+	}
+	if((esVocal(a) == 0) && (esVocal(b) == 0)&&(esVocal(c) == 1))
+	{
+		//a y b son consonantes
+		if(a <= b)
+			return a;
+		return b;
+	}
+	if((esVocal(a) == 0) && (esVocal(b) == 1)&&(esVocal(c) == 0))
+	{
+		//a y c son consonantes
+		if(a <= c)
+			return a;
+		return c;
+	}
+	if((esVocal(a) == 1) && (esVocal(b) == 0)&&(esVocal(c) == 0))
+	{
+		//c y b son consonantes
+		if(b <= c)
+			return b;
+		return c;
+	}
+
+
+
+	
+
 }
 
 void codificar10(char link[50],size_t len)
@@ -134,7 +209,7 @@ void codificar20(char link[50],size_t len)
 	while(x != len/2)
 	{
 		printf("\nUsando %d y %d\n",link[y],link[y+1]);
-		nuevoLink[x] = escoger(link[y],link[y+1]);
+		nuevoLink[x] = escoger2(link[y],link[y+1]);
 					
 		x = x+1;
 		y = y+2;
@@ -146,7 +221,25 @@ void codificar20(char link[50],size_t len)
 	printf("\nLink codificado20: dog.gy/%s\n",nuevoLink);	
 }
 
-
+void codificar30(char link[50],size_t len)
+{
+	char nuevoLink[50];
+	int x = 0;
+	int y = 0;
+	while(x != len/3)
+	{
+		printf("\nUsando %d , %d y %d\n",link[y],link[y+1],link[y+2]);
+		nuevoLink[x] = escoger3(link[y],link[y+1],link[y+2]);
+					
+		x = x+1;
+		y = y+3;
+	
+	}
+	//if(esPar(len) == 0)
+	//	nuevoLink[x] = link[len-1];
+	
+	printf("\nLink codificado30: dog.gy/%s\n",nuevoLink);
+}
 
 void codificar(char link[50])
 {
@@ -177,7 +270,7 @@ void codificar(char link[50])
 		else
 			if(len <= 30)
 			{
-				//codificar30(link,len);
+				codificar30(link,len);
 			}
 	
 }
