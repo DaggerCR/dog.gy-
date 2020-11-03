@@ -57,6 +57,7 @@ int esPar(size_t num)
 
 char escoger(char a, char b)
 {
+	//creo que falta arreglar cuando le mandan : - 
 
 	//tranforma caracteres especiales
 	// . ?
@@ -130,8 +131,21 @@ void codificar20(char link[50],size_t len)
 	char nuevoLink[50];
 	int x = 0;
 	int y = 0;
-	if(esPar(len) == 1)
+	//if(esPar(len) == 1)
+	//{
+		while(x != len/2)
+		{
+			printf("\nUsando %d y %d\n",link[y],link[y+1]);
+			nuevoLink[x] = escoger(link[y],link[y+1]);
+					
+			x = x+1;
+			y = y+2;
+		}
+	//}
+	/*
+	else
 	{
+	
 		while(x != len/2)
 		{
 			printf("\nUsando %d y %d\n",link[y],link[y+1]);
@@ -141,6 +155,7 @@ void codificar20(char link[50],size_t len)
 			y = y+2;
 		}
 	}
+	*/
 	printf("\nLink codificado20: dog.gy/%s\n",nuevoLink);	
 }
 
@@ -172,6 +187,11 @@ void codificar(char link[50])
 		{
 			codificar20(link,len);
 		}
+		else
+			if(len <= 30)
+			{
+				//codificar30(link,len);
+			}
 	
 }
 
