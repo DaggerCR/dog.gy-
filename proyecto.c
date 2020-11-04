@@ -168,6 +168,21 @@ char escoger3(char a, char b, char c)
 
 }
 
+char escoger4(char a, char b, char c, char d)
+{
+	char ganador[4] = {a,b,c,d};
+	 
+	for(int x = 0; x <= 4; x++)
+	{
+		if(a < ganador[x])
+		{
+			a = ganador[x];
+		}
+			
+	}
+	return a;
+}
+
 void codificar10(char link[50],size_t len)
 {
 	//dog.gy
@@ -241,6 +256,26 @@ void codificar30(char link[50],size_t len)
 	printf("\nLink codificado30: dog.gy/%s\n",nuevoLink);
 }
 
+char codificar40(char link[50],size_t len)
+{
+	char nuevoLink[50];
+	int x = 0;
+	int y = 0;
+	while(x != len/4)
+	{
+		printf("\nUsando %d , %d , %d y %d\n",link[y],link[y+1],link[y+2],link[y+3]);
+		nuevoLink[x] = escoger4(link[y],link[y+1],link[y+2],link[y+3]);
+					
+		x = x+1;
+		y = y+4;
+	
+	}
+	//if(esPar(len) == 0)
+	//	nuevoLink[x] = link[len-1];
+	
+	printf("\nLink codificado40: dog.gy/%s\n",nuevoLink);
+}
+
 void codificar(char link[50])
 {
 	//sacamos su tamano para controles futuros
@@ -272,6 +307,11 @@ void codificar(char link[50])
 			{
 				codificar30(link,len);
 			}
+			else	
+				if(len <= 40)
+				{
+					codificar40(link,len);
+				}
 	
 }
 
