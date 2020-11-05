@@ -20,17 +20,15 @@
 #include <stdlib.h>
 #include<string.h>
 
-typedef struct Nodo
+typedef struct NodoLink
 {
-	char dato1[1];
-	char dato2[1];
-	char dato3[1];
-	char dato4[1];
-	char dato5[1];
-	int size;
+	char link[50];
+	char linkCodificado[50];
+	size_t size;
 	struct Nodo *siguiente;
 	struct Nodo *anterior;
 };
+
 //por ahora no se usa
 typedef struct ListaSimple
 {
@@ -39,12 +37,6 @@ typedef struct ListaSimple
 	
 };struct ListaSimple *Lista;
 
-// A = 65
-// M = 77
-// Z = 90
-// a = 97
-// m = 109
-// z = 122
 
 int esPar(size_t num)
 {
@@ -188,7 +180,7 @@ void codificar10(char link[50],size_t len)
 	//dog.gy
 	//10 nodos de 1 dato cada uno
 	
-	char nuevoLink[10];
+	char nuevoLink[50];
 	int x = 0;
 	while(x != len)
 	{
@@ -213,7 +205,18 @@ void codificar10(char link[50],size_t len)
 		}
 		x++;
 	}
-	printf("\nLink codificado10: dog.gy/%s\n",nuevoLink);
+	struct NodoLink *nuevo;
+	nuevo=(struct NodoLink*)malloc(sizeof(struct NodoLink));
+	if(nuevo==NULL)
+		printf("No hay memoria disponible!\n");
+
+	for(int x = 0; x< len; x++)
+	{
+		nuevo->link[x] = link[x];		
+		nuevo->linkCodificado[x] = nuevoLink[x];
+	}
+	nuevo->size = len;
+	printf("\nLink codificado10: dog.gy/%s\n",nuevo->linkCodificado);
 }
 
 void codificar20(char link[50],size_t len)
@@ -233,6 +236,18 @@ void codificar20(char link[50],size_t len)
 	if(esPar(len) == 0)
 		nuevoLink[x] = link[len-1];
 	
+	
+	struct NodoLink *nuevo;
+	nuevo=(struct NodoLink*)malloc(sizeof(struct NodoLink));
+	if(nuevo==NULL)
+		printf("No hay memoria disponible!\n");
+
+	for(int x = 0; x< len; x++)
+	{
+		nuevo->link[x] = link[x];		
+		nuevo->linkCodificado[x] = nuevoLink[x];
+	}
+	nuevo->size = len;
 	printf("\nLink codificado20: dog.gy/%s\n",nuevoLink);	
 }
 
@@ -253,6 +268,17 @@ void codificar30(char link[50],size_t len)
 	//if(esPar(len) == 0)
 	//	nuevoLink[x] = link[len-1];
 	
+	struct NodoLink *nuevo;
+	nuevo=(struct NodoLink*)malloc(sizeof(struct NodoLink));
+	if(nuevo==NULL)
+		printf("No hay memoria disponible!\n");
+
+	for(int x = 0; x< len; x++)
+	{
+		nuevo->link[x] = link[x];		
+		nuevo->linkCodificado[x] = nuevoLink[x];
+	}
+	nuevo->size = len;
 	printf("\nLink codificado30: dog.gy/%s\n",nuevoLink);
 }
 
@@ -273,6 +299,17 @@ char codificar40(char link[50],size_t len)
 	//if(esPar(len) == 0)
 	//	nuevoLink[x] = link[len-1];
 	
+	struct NodoLink *nuevo;
+	nuevo=(struct NodoLink*)malloc(sizeof(struct NodoLink));
+	if(nuevo==NULL)
+		printf("No hay memoria disponible!\n");
+
+	for(int x = 0; x< len; x++)
+	{
+		nuevo->link[x] = link[x];		
+		nuevo->linkCodificado[x] = nuevoLink[x];
+	}
+	nuevo->size = len;
 	printf("\nLink codificado40: dog.gy/%s\n",nuevoLink);
 }
 
@@ -315,11 +352,11 @@ void codificar(char link[50])
 	
 }
 
-int main()
+void digitarLink()
 {
 	//definimos el link de entrada
 	char link[50];
-	
+	gets();
 	printf("Digite el link: ");
 	gets(link);
 	
@@ -327,8 +364,28 @@ int main()
 	
 	//ejemplos de pruebas
 	printf("\nLink digitado: %s",link);
-	printf("\nLink digitado espacio 2: %c\n",link[2]);
+	//printf("\nLink digitado espacio 2: %c\n",link[2]);
 	codificar(link);
+	
+}
+
+int main()
+{
+	int opcion;
+	do
+	{
+		printf("\nMenu\n");
+		printf("\n1.Insertar un link");
+		printf("\n10.Salir");
+		printf("\nDigite una opcion: ");
+		scanf("%d",&opcion);
+		switch(opcion)
+		{
+			case 1:
+				digitarLink();
+				break;
+		}
+	}while(opcion != 10);
 	
 	
 	
