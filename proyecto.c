@@ -12,13 +12,14 @@
 	el usuario, cada uno será referenciado con un número consecutivo a partir de
 	1 y hasta el último ingresado.
 	
-
-
 */
 
 #include<stdio.h>
-#include <stdlib.h>
+#include<stdlib.h>
 #include<string.h>
+#include <limits.h>
+
+#define TABLE_SIZE 6
 
 int contadorGeneral = 0;
 
@@ -40,6 +41,170 @@ typedef struct ListaSimple
 	struct NodoLink *ultimoNodo;		
 	
 };struct ListaSimple *ListaGeneral;
+
+typedef struct entradaT {
+    char *llave;
+    struct NodoLink *valor;
+    struct entradaT *siguiente;
+} entradaT;
+
+typedef struct {
+    entradaT **entradas;
+} hashT;
+
+unsigned int hash(const char *llave) {
+    unsigned long int valor = 0;
+    unsigned int i = 0;
+    unsigned int llave_len = strlen(llave);
+
+    for (; i < llave_len; ++i) {
+        valor = valor * 37 + llave[i];
+    }
+    valor = valor % TABLE_SIZE;
+
+    return valor;
+}
+
+entradaT *htMemoria(const char *llave, const char *valor) {
+    entradaT *entrada = malloc(sizeof(entradaT) * 1);
+    entrada->llave = malloc(strlen(llave) + 1);
+    entrada->valor = malloc(strlen(valor) + 1);
+
+    strcpy(entrada->llave, llave);
+    strcpy(entrada->valor, valor);
+
+    entrada->siguiente = NULL;
+
+    return entrada;
+}
+
+hashT *htCrear(void) {
+    hashT *hashtable = malloc(sizeof(hashT) * 1);
+
+    hashtable->entradas = malloc(sizeof(entradaT*) * TABLE_SIZE);
+
+    int i = 0;
+    for (; i < TABLE_SIZE; ++i) {
+        hashtable->entradas[i] = NULL;
+    }
+
+    return hashtable;
+}
+
+void ht_set(hashT *hashtable, const char *llave, const char *valor) {
+    unsigned int campo = hash(llave);
+
+    entradaT *entrada = hashtable->entradas[campo];
+
+    if (entrada == NULL) {
+        hashtable->entradas[campo] = htMemoria(llave, valor);
+        return;
+    }
+
+    entradaT *aux;
+
+    while (entrada != NULL) {
+        if (strcmp(entrada->llave, llave) == 0) {
+            free(entrada->valor);
+            entrada->valor = malloc(strlen(valor) + 1);
+            strcpy(entrada->valor, valor);
+            return;
+        }
+
+        aux = entrada;
+        entrada = aux->siguiente;
+    }
+
+    aux->siguiente = htMemoria(llave, valor);
+}
+
+char *ht_get(hashT *hashtable, const char *llave) {
+    unsigned int campo = hash(llave);
+
+    entradaT *entrada = hashtable->entradas[campo];
+
+    if (entrada == NULL) {
+        return NULL;
+    }
+
+    while (entrada != NULL) {
+        if (strcmp(entrada->llave, llave) == 0) {
+            return entrada->valor;
+        }
+
+        entrada = entrada->siguiente;
+    }
+
+    return NULL;
+}
+
+void ht_del(hashT *hashtable, const char *llave) {
+    unsigned int bucket = hash(llave);
+
+    entradaT *entrada = hashtable->entradas[bucket];
+
+    if (entrada == NULL) {
+        return;
+    }
+
+    entradaT *aux;
+    int x = 0;
+
+    while (entrada != NULL) {
+        if (strcmp(entrada->llave, llave) == 0) {
+            if (entrada->siguiente == NULL && x == 0) {
+                hashtable->entradas[bucket] = NULL;
+            }
+
+            if (entrada->siguiente != NULL && x == 0) {
+                hashtable->entradas[bucket] = entrada->siguiente;
+            }
+
+            if (entrada->siguiente == NULL && x != 0) {
+                aux->siguiente = NULL;
+            }
+
+            if (entrada->siguiente != NULL && x != 0) {
+                aux->siguiente = entrada->siguiente;
+            }
+
+            free(entrada->llave);
+            free(entrada->valor);
+            free(entrada);
+
+            return;
+        }
+
+        aux = entrada;
+        entrada = aux->siguiente;
+
+        ++x;
+    }
+}
+
+void ht_dump(hashT *hashtable) {
+    for (int i = 0; i < TABLE_SIZE; ++i) {
+        entradaT *entrada = hashtable->entradas[i];
+
+        if (entrada == NULL) {
+            continue;
+        }
+
+        printf("campo[%4d]: ", i);
+
+        for(;;) {
+            printf("%s=%s ", entrada->llave, entrada->valor);
+
+            if (entrada->siguiente == NULL) {
+                break;
+            }
+
+            entrada = entrada->siguiente;
+        }
+
+        printf("\n");
+    }
+}
 
 void agregarListaGeneral(struct NodoLink *nuevo)
 {
@@ -184,11 +349,6 @@ char escoger3(char a, char b, char c)
 			return b;
 		return c;
 	}
-
-
-
-	
-
 }
 
 char escoger4(char a, char b, char c, char d)
@@ -252,6 +412,7 @@ void codificar10(char link[50],size_t len)
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
 	agregarListaGeneral(nuevo);
+    ht_set(ht, nuevo->linkCodificado, nuevo);
 	printf("\nLink codificado10: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
 
@@ -288,6 +449,7 @@ void codificar20(char link[50],size_t len)
 	contadorGeneral++;
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
+    ht_set(ht, nuevo->linkCodificado, nuevo);
 	agregarListaGeneral(nuevo);
 	printf("\nLink codificado20: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
@@ -324,6 +486,7 @@ void codificar30(char link[50],size_t len)
 	contadorGeneral++;
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
+    ht_set(ht, nuevo->linkCodificado, nuevo);
 	agregarListaGeneral(nuevo);
 	printf("\nLink codificado30: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
@@ -360,6 +523,7 @@ char codificar40(char link[50],size_t len)
 	contadorGeneral++;
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
+    ht_set(ht, nuevo->linkCodificado, nuevo);
 	agregarListaGeneral(nuevo);
 	printf("\nLink codificado40: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
@@ -407,7 +571,7 @@ void digitarLink()
 {
 	//definimos el link de entrada
 	char link[50];
-	gets();
+	//gets();
 	printf("Digite el link: ");
 	gets(link);
 	
@@ -417,7 +581,6 @@ void digitarLink()
 	printf("\nLink digitado: %s",link);
 	//printf("\nLink digitado espacio 2: %c\n",link[2]);
 	codificar(link);
-	
 }
 
 void crearlinkTree()
@@ -452,7 +615,7 @@ void verTodo()
 		printf("\n\tLink codificado: dog.gy/%s",tmp->linkCodificado);
 		printf("\n\tNumero de registro: %d",tmp->numeroRegistro);
 		tmp = tmp->siguiente;
-		printf("\n_____________________________________________\n")
+		printf("\n_____________________________________________\n");
 	}
 }
 
@@ -488,18 +651,4 @@ int main()
 				break;
 		}
 	}while(opcion != 10);
-	
-	
-	
-	
-	
-	
 }//cierre del main
-
-
-
-
-
-
-
-
