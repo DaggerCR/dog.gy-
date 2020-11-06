@@ -21,7 +21,7 @@
 
 #define TABLE_SIZE 6
 
-int contadorGeneral = 0;
+int contadorGeneral = 1;
 
 typedef struct NodoLink
 {
@@ -210,7 +210,7 @@ void agregarListaGeneral(struct NodoLink *nuevo)
 {
 	if(ListaGeneral->primerNodo==NULL)
 	{
-		printf("Primer elemento\n");
+		printf("\nPrimer elemento\n");
 		ListaGeneral->primerNodo=nuevo;
 		ListaGeneral->ultimoNodo=nuevo;
 	}
@@ -412,7 +412,7 @@ void codificar10(char link[50],size_t len)
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
 	agregarListaGeneral(nuevo);
-    ht_set(ht, nuevo->linkCodificado, nuevo);
+    //ht_set(ht, nuevo->linkCodificado, nuevo);
 	printf("\nLink codificado10: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
 
@@ -423,7 +423,7 @@ void codificar20(char link[50],size_t len)
 	int y = 0;
 	while(x != len/2)
 	{
-		printf("\nUsando %d y %d\n",link[y],link[y+1]);
+		//printf("\nUsando %d y %d\n",link[y],link[y+1]);
 		nuevoLink[x] = escoger2(link[y],link[y+1]);
 					
 		x = x+1;
@@ -449,7 +449,7 @@ void codificar20(char link[50],size_t len)
 	contadorGeneral++;
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
-    ht_set(ht, nuevo->linkCodificado, nuevo);
+    //ht_set(ht, nuevo->linkCodificado, nuevo);
 	agregarListaGeneral(nuevo);
 	printf("\nLink codificado20: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
@@ -461,7 +461,7 @@ void codificar30(char link[50],size_t len)
 	int y = 0;
 	while(x != len/3)
 	{
-		printf("\nUsando %d , %d y %d\n",link[y],link[y+1],link[y+2]);
+		//printf("\nUsando %d , %d y %d\n",link[y],link[y+1],link[y+2]);
 		nuevoLink[x] = escoger3(link[y],link[y+1],link[y+2]);
 					
 		x = x+1;
@@ -486,7 +486,7 @@ void codificar30(char link[50],size_t len)
 	contadorGeneral++;
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
-    ht_set(ht, nuevo->linkCodificado, nuevo);
+    //ht_set(ht, nuevo->linkCodificado, nuevo);
 	agregarListaGeneral(nuevo);
 	printf("\nLink codificado30: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
@@ -523,7 +523,7 @@ char codificar40(char link[50],size_t len)
 	contadorGeneral++;
 	nuevo->siguiente=NULL;
 	nuevo->anterior = NULL;
-    ht_set(ht, nuevo->linkCodificado, nuevo);
+    //ht_set(ht, nuevo->linkCodificado, nuevo);
 	agregarListaGeneral(nuevo);
 	printf("\nLink codificado40: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
@@ -569,10 +569,11 @@ void codificar(char link[50])
 
 void digitarLink()
 {
+	printf("	  DIGITAR UN LINK");
 	//definimos el link de entrada
 	char link[50];
-	//gets();
-	printf("Digite el link: ");
+	gets();
+	printf("\n\nDigite el link: ");
 	gets(link);
 	
 	
@@ -590,7 +591,7 @@ void crearlinkTree()
 	if(nuevo==NULL)
 		printf("No hay memoria disponible!\n");
 	
-	printf("\n-------Nuevo elemento-------\n");
+	printf("\n----------Crear Link Tree----------\n\n");
 	gets(); //necesario para que funcione, creo
 	
 	printf("Nombre: ");
@@ -600,10 +601,62 @@ void crearlinkTree()
 	printf("Link: ");
 	fflush(stdout);
 	gets(nuevo->link);	
+	
+	//struct ListaSimple *ListaGeneral;
+	nuevo->Lista = (struct ListaSimple*)malloc(sizeof(struct ListaSimple));
+	
+	
+	verTodo();
+	
+	int id = 0;
+	printf("\nDigite el ID del link que quiere asociar");
+	printf("\nDigite 0 para terminar");
+	
+	do //nuevo es el nodo tipo LinkTree
+		//tmp es el nodo link que coincide con el id
+	{
+		printf("\nID de link: ");
+		scanf("%d",&id);
+		
+		struct NodoLink *tmp;
+		tmp=(struct NodoLink*)malloc(sizeof(struct NodoLink));
+		if(tmp==NULL)
+			printf("No hay memoria disponible!\n");
+		
+		tmp = ListaGeneral->primerNodo;
+		
+		while(tmp != NULL)
+		{	
+			
+			if(id == tmp->numeroRegistro)
+			{	
+				if(nuevo->Lista->primerNodo==NULL)
+				{   
+					nuevo->Lista->primerNodo=tmp;
+					nuevo->Lista->ultimoNodo=tmp;
+					printf("\nPrimer link agregado\n");
+					break;
+				}
+				else
+				{
+					tmp->anterior = nuevo->Lista->ultimoNodo;
+					nuevo->Lista->ultimoNodo->siguiente=tmp;
+					nuevo->Lista->ultimoNodo=tmp;
+					printf("\nLink agregado\n");
+					tmp->anterior = NULL;
+					break;
+				}
+			}
+			tmp = tmp->siguiente;		
+		}
+		
+		
+	}while(id !=0);
 }
 
 void verTodo()
 {
+	printf("		VER TODO\n\n");
 	struct NodoLink *tmp;
 	tmp=(struct NodoLink*)malloc(sizeof(struct NodoLink));
 	if(tmp==NULL)
@@ -630,14 +683,15 @@ int main()
 	
 	int opcion;
 	do
-	{
-		printf("\nMenu\n");
-		printf("\n1.Insertar un link");
-		printf("\n3.Ver todos los links almacenados");
-		printf("\n6.Crear un linkTree");
-		printf("\n10.Salir");
-		printf("\nDigite una opcion: ");
+	{	printf("\n\n_____________________________________________");
+		printf("\n\t        Menu\n");
+		printf("\n\t1.Insertar un link");
+		printf("\n\t3.Ver todos los links almacenados");
+		printf("\n\t6.Crear un linkTree");
+		printf("\n\t10.Salir");
+		printf("\n\tDigite una opcion: ");
 		scanf("%d",&opcion);
+	 	printf("\n_____________________________________________\n\n");
 		switch(opcion)
 		{
 			case 1:
