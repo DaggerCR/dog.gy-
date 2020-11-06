@@ -20,22 +20,53 @@
 #include <stdlib.h>
 #include<string.h>
 
+int contadorGeneral = 0;
+
 typedef struct NodoLink
 {
+	int numeroRegistro;
+	int visitas;
+	char alias;
 	char link[50];
 	char linkCodificado[50];
 	size_t size;
-	struct Nodo *siguiente;
-	struct Nodo *anterior;
+	struct NodoLink *siguiente;
+	struct NodoLink *anterior;
+};
+
+typedef struct ListaSimple
+{
+	struct NodoLink *primerNodo;
+	struct NodoLink *ultimoNodo;		
+	
+};struct ListaSimple *ListaGeneral;
+
+void agregarListaGeneral(struct NodoLink *nuevo)
+{
+	if(ListaGeneral->primerNodo==NULL)
+	{
+		printf("Primer elemento\n");
+		ListaGeneral->primerNodo=nuevo;
+		ListaGeneral->ultimoNodo=nuevo;
+	}
+	else
+	{
+		nuevo->anterior = ListaGeneral->ultimoNodo;
+		ListaGeneral->ultimoNodo->siguiente=nuevo;
+		ListaGeneral->ultimoNodo=nuevo;
+	}
+}
+
+
+typedef struct NodoLinkTree
+{
+	char link[50];
+	char nombre[50];
+	struct ListaSimple *Lista;
+	
 };
 
 //por ahora no se usa
-typedef struct ListaSimple
-{
-	struct Nodo *primerNodo;
-	struct Nodo *ultimoNodo;		
-	
-};struct ListaSimple *Lista;
 
 
 int esPar(size_t num)
@@ -209,14 +240,19 @@ void codificar10(char link[50],size_t len)
 	nuevo=(struct NodoLink*)malloc(sizeof(struct NodoLink));
 	if(nuevo==NULL)
 		printf("No hay memoria disponible!\n");
-
+	
 	for(int x = 0; x< len; x++)
 	{
 		nuevo->link[x] = link[x];		
 		nuevo->linkCodificado[x] = nuevoLink[x];
 	}
+	nuevo->numeroRegistro = contadorGeneral;
+	contadorGeneral++;
 	nuevo->size = len;
-	printf("\nLink codificado10: dog.gy/%s\n",nuevo->linkCodificado);
+	nuevo->siguiente=NULL;
+	nuevo->anterior = NULL;
+	agregarListaGeneral(nuevo);
+	printf("\nLink codificado10: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
 
 void codificar20(char link[50],size_t len)
@@ -248,7 +284,12 @@ void codificar20(char link[50],size_t len)
 		nuevo->linkCodificado[x] = nuevoLink[x];
 	}
 	nuevo->size = len;
-	printf("\nLink codificado20: dog.gy/%s\n",nuevoLink);	
+	nuevo->numeroRegistro = contadorGeneral;
+	contadorGeneral++;
+	nuevo->siguiente=NULL;
+	nuevo->anterior = NULL;
+	agregarListaGeneral(nuevo);
+	printf("\nLink codificado20: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
 
 void codificar30(char link[50],size_t len)
@@ -272,14 +313,19 @@ void codificar30(char link[50],size_t len)
 	nuevo=(struct NodoLink*)malloc(sizeof(struct NodoLink));
 	if(nuevo==NULL)
 		printf("No hay memoria disponible!\n");
-
+	
 	for(int x = 0; x< len; x++)
 	{
 		nuevo->link[x] = link[x];		
 		nuevo->linkCodificado[x] = nuevoLink[x];
 	}
 	nuevo->size = len;
-	printf("\nLink codificado30: dog.gy/%s\n",nuevoLink);
+	nuevo->numeroRegistro = contadorGeneral;
+	contadorGeneral++;
+	nuevo->siguiente=NULL;
+	nuevo->anterior = NULL;
+	agregarListaGeneral(nuevo);
+	printf("\nLink codificado30: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
 
 char codificar40(char link[50],size_t len)
@@ -310,7 +356,12 @@ char codificar40(char link[50],size_t len)
 		nuevo->linkCodificado[x] = nuevoLink[x];
 	}
 	nuevo->size = len;
-	printf("\nLink codificado40: dog.gy/%s\n",nuevoLink);
+	nuevo->numeroRegistro = contadorGeneral;
+	contadorGeneral++;
+	nuevo->siguiente=NULL;
+	nuevo->anterior = NULL;
+	agregarListaGeneral(nuevo);
+	printf("\nLink codificado40: dog.gy/%s\n",ListaGeneral->ultimoNodo->linkCodificado);
 }
 
 void codificar(char link[50])
@@ -320,7 +371,7 @@ void codificar(char link[50])
 
 	//saber la letra actual
 	int x = 0;
-	printf("\nEste link es de tamano: %d",len);
+	printf("\nEste link es de tamano: %ld",len);
 	
 	/*
 	while(x != len)
@@ -369,13 +420,58 @@ void digitarLink()
 	
 }
 
+void crearlinkTree()
+{
+	struct NodoLinkTree *nuevo;
+	nuevo=(struct NodoLinkTree*)malloc(sizeof(struct NodoLinkTree));
+	if(nuevo==NULL)
+		printf("No hay memoria disponible!\n");
+	
+	printf("\n-------Nuevo elemento-------\n");
+	gets(); //necesario para que funcione, creo
+	
+	printf("Nombre: ");
+	fflush(stdout);
+	gets(nuevo->nombre);
+	
+	printf("Link: ");
+	fflush(stdout);
+	gets(nuevo->link);	
+}
+
+void verTodo()
+{
+	struct NodoLink *tmp;
+	tmp=(struct NodoLink*)malloc(sizeof(struct NodoLink));
+	if(tmp==NULL)
+		printf("No hay memoria disponible!\n");
+	tmp = ListaGeneral->primerNodo;
+	while(tmp != NULL)
+	{
+		printf("\n\tLink: %s",tmp->link);
+		printf("\n\tLink codificado: dog.gy/%s",tmp->linkCodificado);
+		printf("\n\tNumero de registro: %d",tmp->numeroRegistro);
+		tmp = tmp->siguiente;
+		printf("\n_____________________________________________\n")
+	}
+}
+
+
 int main()
 {
+	
+	//struct ListaSimple *ListaGeneral;
+	ListaGeneral = (struct ListaSimple*)malloc(sizeof(struct ListaSimple));
+	
+		
+	
 	int opcion;
 	do
 	{
 		printf("\nMenu\n");
 		printf("\n1.Insertar un link");
+		printf("\n3.Ver todos los links almacenados");
+		printf("\n6.Crear un linkTree");
 		printf("\n10.Salir");
 		printf("\nDigite una opcion: ");
 		scanf("%d",&opcion);
@@ -383,6 +479,12 @@ int main()
 		{
 			case 1:
 				digitarLink();
+				break;
+			case 3:
+				verTodo();
+				break;
+			case 6:
+				crearlinkTree();
 				break;
 		}
 	}while(opcion != 10);
